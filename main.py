@@ -1,10 +1,13 @@
+from dotenv import load_dotenv
 from fileinput import filename
 import os
 from flask import Flask,render_template, request, redirect, url_for
 app = Flask(__name__)
-UPLOAD_FOLDER = "static/uploads"
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+load_dotenv()
+
+upload_folder = os.getenv("UPLOAD_FOLDER")
+os.makedirs(upload_folder, exist_ok=True)
 
 carlist = [
    {"name": "Viper", "brand": "Dodge", "year": 2020, "price": 80000 , "img": "viper.png"},
@@ -12,6 +15,9 @@ carlist = [
    {"name": "Camaro", "brand": "Chevrolet", "year": 2021, "price": 30000 , "img": "camaro.jpg"},
    {"name": "A200", "brand": "Mercedes-Benz", "year": 2021, "price": 35000 , "img": "a200.jpg"},
    ]
+
+def get_template():
+    return render_template("index.html", cars=carlist)
 
 @app.route("/")
 def home():
@@ -39,7 +45,7 @@ def add():
     price = int(request.form["price"])
     file = request.files["img"]
     if file:
-        filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+        filepath = os.path.join(upload_folder, file.filename)
         file.save(filepath)
         img_path = f"uploads/{file.filename}"
     else:
@@ -52,5 +58,3 @@ if __name__ == "__main__":
     app.run(debug=True)
     # app.run(host="0.0.0.0", port=8000, debug=True)
 
-def get_template():
-    return render_template("index.html", cars=carlist)
