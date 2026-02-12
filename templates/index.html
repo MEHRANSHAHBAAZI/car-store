@@ -1,8 +1,9 @@
 <img src="/static/logo.jpg" alt="a200" style="width: 720px;height: 360px;"> 
 <h1>AUTOMOTIVE</h1>
 <H2>BIG BUSINESS</H2>
-<form action="/search" method="post">
-    <input type="text" name="query" placeholder="Search by brand or model">
+
+<form id="searchForm">
+    <input type="text" id="query" placeholder="Search..." required>
     <button type="submit">Search</button>
 </form>
 
@@ -16,19 +17,30 @@
 </form>
 <hr>
 
-<h1>All Cars</h1>
+<div id="results"></div>
 
-{% if cars %}
-    <ul>
-        {% for car in cars %}
-            <li>
-                <img src="{{ url_for('static', filename=car.img) }}" alt="{{ car.name }}" style="width:300px; vertical-align: middle; margin-right:10px;">
-                {{ car.name }} - {{ car.brand }} - {{ car.year }} - ${{ car.price }}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No cars found.</p>
-{% endif %}
+<script>
+document.getElementById("searchForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
+    const query = document.getElementById("query").value;
 
+    fetch(`/search?query=${query}`)
+        .then(response => response.json())
+        .then(cars => {
+            if(cars.lenght === 0) {
+                document.getElementById("results").innerHTML = "<p>No cars found.</p>";
+                return;
+            }
+            cars.forEach(car => {
+                const carElement = document.createElement("div");
+                carElement.innerHTML = `
+                    <img src="/static/${car.img}" alt="${car.name}" style="width:300px; vertical-align: middle; margin-right:10px;">
+                    ${car.name} - ${car.brand} - ${car.year} - $${car.price}
+                `;
+                document.getElementById("results").appendChild(carElement);
+            });
+        })
+        .catch(error => console.error("Error:", error));
+});
+</script>

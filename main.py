@@ -25,17 +25,16 @@ def home():
 
 @app.route("/cars", methods=["GET"])
 def cars():
-    return get_template()
+    return render_template("index.html", cars=carlist)
 
 @app.route("/search", methods=["GET"])
 def search():
-    if request.method == "GET":
-        return get_template()
+    query = request.args.get("query")
+    if query is None:
+        return []
     
-    query = request.form.get("query", "")
     results = [car for car in carlist if query.lower() in car["name"].lower()]
-    return render_template("index.html", cars=results)
-
+    return results
 
 @app.route("/add", methods=["POST"])
 def add():
