@@ -7,7 +7,12 @@ app = Flask(__name__)
 load_dotenv()
 
 upload_folder = os.getenv("UPLOAD_FOLDER")
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  
 os.makedirs(upload_folder, exist_ok=True)
+
+@app.errorhandler(413)
+def file_too_large(error):
+    return "file is too large (maxximum 1MB)", 413
 
 carlist = [
    {"name": "Viper", "brand": "Dodge", "year": 2020, "price": 80000 , "img": "viper.png"},
