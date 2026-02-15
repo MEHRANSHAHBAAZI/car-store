@@ -1,129 +1,48 @@
-<img src="{{ url_for('static', filename='assets/logo.jpg') }}" alt="a200" style="width: 720px;height: 360px;">
-<h1>AUTOMOTIVE</h1>
-<H2>BIG BUSINESS</H2>
-
-<form id="searchForm">
-    <input type="text" id="query" placeholder="Search..." required>
-    <button type="submit">Search</button>
-</form>
-
-<form id="carForm" enctype="multipart/form-data">
-    <input type="text" name="brand" placeholder="brand name" required>
-    <input type="text" name="name" placeholder="car name" required>
-    <input type="number" name="year" placeholder="year" required>
-    <input type="number" name="price" placeholder="price" required>
-    <input type="file" id="imgInput" name="img" accept="image/*" required>
-    <button type="submit">Add Car</button>
-</form>
-<hr>
+<div class="header">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='assets/logo.jpg') }}" alt="a200" style="width: 300px;">
+    </div>
+    <div class="header-title">
+        <h1>AUTOMOTIVE - BIG BUSINESS</h1>
+    </div>
+    <div class="header-search">
+        <form id="searchForm">
+            <input type="text" id="query" placeholder="Search...">
+            <button class="btn-search" type="submit">Search</button>
+        </form>
+    </div>
+</div>
 
 <div id="results"></div>
 
-<script>
-    document.getElementById("searchForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+<hr>
 
-        const query = document.getElementById("query").value;
+<form id="carForm" class="add-car-form" enctype="multipart/form-data">
+    <div class="input-control">
+        <label for="brand">Brand Name:</label>
+        <input type="text" id="brand" name="brand" required>
+    </div>
+    <div class="input-control">
+        <label for="name">Car Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div class="input-control">
+        <label for="year">Production Year:</label>
+        <input type="number" id="year" name="year" required>
+    </div>
+    <div class="input-control">
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required>
+    </div>
+    <div class="input-control">
+        <label for="imgInput">Car Photo:</label>
+        <input type="file" id="imgInput" name="img" accept="image/*" required>
+    </div>
+    <div class="input-control">
+        <button class="btn-add" type="submit">Add Car</button>
+    </div>
+</form>
 
-        fetch(`/search?query=${query}`)
-            .then(response => response.json())
-            .then(cars => {
-                const carsResutlsElement = document.getElementById("results")
-                if(!carsResutlsElement)
-                    return;
-
-                if (cars.lenght === 0) {
-                    carsResutlsElement.innerHTML = "<p>No cars found.</p>";
-                    return;
-                }
-
-                carsResutlsElement.innerHTML = "";
-
-                cars.forEach(car => {
-                    const carElement = document.createElement("div");
-                    carElement.className = "car-item";
-                    carElement.innerHTML = `
-                        <img src="/static/assets/${car.img}" alt="${car.name}" style="width:300px; vertical-align: middle; margin-right:10px;">
-                        <div class=car-info>
-                            <p> Model: <span> ${car.name} </span> </p>
-                            <p> Company name: <span> ${car.brand} </span> </p>
-                            <p> Production year: <span> ${car.year} </span> </p>
-                            <p> Price: <span> $${car.price} </span> </p>
-                        </div>
-                    `;
-                    carsResutlsElement.className = "cars-list";
-                    carsResutlsElement.appendChild(carElement);
-                });
-            })
-            .catch(error => console.error("Error:", error));
-    });
-
-    document.getElementById("carForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const MAX_SIZE_MB = 1;
-        const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
-
-        const fileInput = document.getElementById("imgInput");
-        const file = fileInput.files[0];
-        
-        if (file) {
-            if (file.size > MAX_SIZE_BYTES) {
-                alert("File is to0o large. Maximum size is 1MB.");
-                return;
-            }
-        } else if (!file) {
-            alert("Please select an image.");
-            return;
-        }
-
-        const formData = new FormData(this);
-
-        fetch("/add", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => response.json())
-            .then(response => {
-                alert(response?.message);
-                this.reset();
-            })
-            .catch(error => {
-                alert("Error: something went wrong.");
-                console.error(error);
-            });
-    });
-
-</script>
-
-<style>
-.cars-list {
-    margin: 8px;
-    padding: 10px;
-    border: solid 1px whitesmoke;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-}
-
-.car-item {
-    display: flex;
-    margin: 5px;
-    padding: 5px;
-    border: solid 1px whitesmoke;
-    width: 30%;
-}
-
-.car-item:hover{
-    border: solid 1px rgb(187, 184, 184);
-    cursor: pointer;
-}
-
-.car-info p {
-    font-weight: bold;
-    font-size: 11pt;
-}
-.car-info p span {
-    font-weight: normal;
-}
-</style>
+<script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+</link>

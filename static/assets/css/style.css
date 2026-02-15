@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+}
+
+input[type=text] {
+    height: 25px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    border: solid 1px darkgray;
+    background-color: whitesmoke;
+}
+
+.input-control {
+    display: flex;
+    flex-direction: column;
+    margin: 4px;
+}
+
+.input-form label {
+    margin: 3px;
+}
+
+.btn-add {
+    width: 180px;
+    margin-top: 15px;
+    height: 25px;
+    background-color: #049704;
+    border: transparent;
+    color: white;
+}
+
+.header-search {
+    margin-right: 10px;
+}
+
+.btn-search {
+    width: 60px;
+    background-color: #30558a;
+    border: transparent;
+    color: white;
+    height: 25px;
+}
+
+.cars-list {
+    margin: 8px;
+    padding: 10px;
+    border: solid 1px whitesmoke;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.car-item {
+    display: flex;
+    margin: 5px;
+    padding: 5px;
+    border: solid 1px whitesmoke;
+    width: 30%;
+}
+
+.car-item:hover {
+    border: solid 1px rgb(187, 184, 184);
+    cursor: pointer;
+}
+
+.car-info p {
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+.car-info p span {
+    font-weight: normal;
+}
+
+.add-car-form {
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}

@@ -1,63 +1,33 @@
 from dotenv import load_dotenv
-from fileinput import filename
 import os
-from flask import Flask,render_template, request, redirect, url_for, jsonify
+from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
-from static_data.cars import carlist
-
-app = Flask(__name__)
+from routes.car_routes import car_bp
 
 load_dotenv()
 
-upload_folder = os.getenv("UPLOAD_FOLDER")
-app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  
-os.makedirs(upload_folder, exist_ok=True)
+def create_app():
+    app = Flask(__name__)
 
-@app.errorhandler(HTTPException)
-def handle_http_exception(error):
-    return jsonify({
-        "error": error.name,
-        "message": error.description,
-        "status_code": error.code
-    }), error.code
+    upload_folder = os.getenv("UPLOAD_FOLDER")
+    app.config["UPLOAD_FOLDER"] = upload_folder
+    app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
 
-@app.route("/")
-def home():
-    return render_template("index.html", cars=carlist)
+    os.makedirs(upload_folder, exist_ok=True)
 
-@app.route("/search", methods=["GET"])
-def search():
-    query = request.args.get("query")
-    if query is None:
-        return []
-    
-    results = [car for car in carlist if query.lower() in car["name"].lower()]
-    return results
+    # Register blueprint
+    app.register_blueprint(car_bp)
 
-@app.route("/add", methods=["POST"])
-def add():
-    brand = request.form["brand"]
-    name = request.form["name"]
-    year = int(request.form["year"])
-    price = int(request.form["price"])
-    file = request.files["img"]
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(error):
+        return jsonify({
+            "error": error.name,
+            "message": error.description,
+            "status_code": error.code
+        }), error.code
 
-    if file:
-        filepath = os.path.join(upload_folder, file.filename)
-        file.save(filepath)
-        img_path = f"uploads/{file.filename}"
-    else:
-        img_path = "default.jpg"
-
-    new_car = {"name": name, "brand": brand, "year": year, "price": price, "img": img_path}
-
-    carlist.append(new_car)
-
-    return jsonify({
-        "message": f"{name} {brand} added successfully."
-    })
+    return app
 
 if __name__ == "__main__":
+    app = create_app()
     app.run(debug=True)
-    # app.run(host="0.0.0.0", port=8000, debug=True)
-
