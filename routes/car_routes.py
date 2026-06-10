@@ -1,7 +1,6 @@
 import os
 from flask import Blueprint, render_template, request, jsonify, current_app
 from static_data.cars import carlist
-from werkzeug.utils import secure_filename
 from routes.car_modul import add_car, search_cars
 
 car_bp = Blueprint("car_bp", __name__)
