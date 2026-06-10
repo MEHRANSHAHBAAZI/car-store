@@ -1,0 +1,42 @@
+<div class="header">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='assets/logo.jpg') }}" alt="a200" style="width: 300px;">
+    </div>
+    <div class="header-title">
+        <h1>Add a New Car</h1>
+    </div>
+    <div class="header-search">
+        <a href="{{ url_for('car_bp.home') }}" class="btn-search">Back to Home</a>
+    </div>
+</div>
+
+<div class="form-page">
+    <form id="carForm" class="add-car-form" action="{{ url_for('car_bp.add') }}" method="post" enctype="multipart/form-data">
+        <div class="input-control">
+            <label for="brand">Brand Name:</label>
+            <input type="text" id="brand" name="brandName" required>
+        </div>
+        <div class="input-control">
+            <label for="model">Car Model:</label>
+            <input type="text" id="model" name="model" required>
+        </div>
+        <div class="input-control">
+            <label for="year">Production Year:</label>
+            <input type="number" id="year" name="productionYear" required>
+        </div>
+        <div class="input-control">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required>
+        </div>
+        <div class="input-control">
+            <label for="imgInput">Car Photo:</label>
+            <input type="file" id="imgInput" name="img" accept="image/*" required>
+        </div>
+        <div class="input-control">
+            <button class="btn-add" type="submit">Add Car</button>
+        </div>
+    </form>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+</link>

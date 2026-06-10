@@ -1,39 +1,76 @@
-document.getElementById("searchForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+const searchForm = document.getElementById("searchForm");
+const queryInput = document.getElementById("query");
+const sortSelect = document.getElementById("sortSelect");
+const carsResultsElement = document.getElementById("results");
+const initialTable = document.getElementById("initialTable");
 
-    const query = document.getElementById("query").value;
+function getSortUrl(query, sort) {
+    let url = "/search?";
+    const params = new URLSearchParams();
+    if (query) params.append("query", query);
+    if (sort) params.append("sort", sort);
+    return url + params.toString();
+}
 
-    fetch(`/search?query=${query}`)
+function renderCars(cars) {
+    if (!carsResultsElement) return;
+
+    if (cars.length === 0) {
+        carsResultsElement.innerHTML = "<p>No cars found.</p>";
+        return;
+    }
+
+    let html = `
+        <table class="car-table">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Model</th>
+                    <th>Brand</th>
+                    <th>Year</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    cars.forEach(car => {
+        html += `
+            <tr>
+                <td><img class="table-car-image" src="/static/assets/${car.img}" alt="${car.model}"></td>
+                <td>${car.model}</td>
+                <td>${car.brandName}</td>
+                <td>${car.productionYear}</td>
+                <td>$${car.price}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    carsResultsElement.innerHTML = html;
+}
+
+function searchCars() {
+    const query = queryInput.value.trim();
+    const sort = sortSelect.value;
+    const url = getSortUrl(query, sort);
+
+    fetch(url)
         .then(response => response.json())
         .then(cars => {
-            const carsResutlsElement = document.getElementById("results")
-            if(!carsResutlsElement)
-                return;
-
-            if (cars.lenght === 0) {
-                carsResutlsElement.innerHTML = "<p>No cars found.</p>";
-                return;
-            }
-
-            carsResutlsElement.innerHTML = "";
-
-            cars.forEach(car => {
-                const carElement = document.createElement("div");
-                carElement.className = "car-item";
-                carElement.innerHTML = `
-                    <img src="/static/assets/${car.img}" alt="${car.name}" style="width:300px; vertical-align: middle; margin-right:10px;">
-                    <div class=car-info>
-                        <p> Model: <span> ${car.name} </span> </p>
-                        <p> Company name: <span> ${car.brand} </span> </p>
-                        <p> Production year: <span> ${car.year} </span> </p>
-                        <p> Price: <span> $${car.price} </span> </p>
-                    </div>
-                `;
-                carsResutlsElement.className = "cars-list";
-                carsResutlsElement.appendChild(carElement);
-            });
+            renderCars(cars);
+            if (initialTable) initialTable.style.display = "none";
         })
         .catch(error => console.error("Error:", error));
+}
+
+searchForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    searchCars();
+});
+
+sortSelect.addEventListener("change", function () {
+    searchCars();
 });
 
 document.getElementById("carForm").addEventListener("submit", function (e) {
@@ -47,10 +84,10 @@ document.getElementById("carForm").addEventListener("submit", function (e) {
     
     if (file) {
         if (file.size > MAX_SIZE_BYTES) {
-            alert("File is to0o large. Maximum size is 1MB.");
+            alert("File is too large. Maximum size is 1MB.");
             return;
         }
-    } else if (!file) {
+    } else {
         alert("Please select an image.");
         return;
     }
@@ -65,6 +102,7 @@ document.getElementById("carForm").addEventListener("submit", function (e) {
         .then(response => {
             alert(response?.message);
             this.reset();
+            window.location.reload();
         })
         .catch(error => {
             alert("Error: something went wrong.");
