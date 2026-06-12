@@ -105,6 +105,15 @@ input[type=text] {
     text-decoration: none;
 }
 
+.success-banner {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 .cars-list {
     margin: 8px;
     padding: 10px;

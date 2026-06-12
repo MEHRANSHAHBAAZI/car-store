@@ -37,7 +37,7 @@ function renderCars(cars) {
     cars.forEach(car => {
         html += `
             <tr>
-                <td><img class="table-car-image" src="/static/assets/${car.img}" alt="${car.model}"></td>
+                <td><img class="table-car-image" src="/static/uploads/${car.img}" alt="${car.model}"></td>
                 <td>${car.model}</td>
                 <td>${car.brandName}</td>
                 <td>${car.productionYear}</td>
@@ -64,17 +64,23 @@ function searchCars() {
         .catch(error => console.error("Error:", error));
 }
 
-searchForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    searchCars();
-});
+if (searchForm) {
+    searchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        searchCars();
+    });
+}
 
-sortSelect.addEventListener("change", function () {
-    searchCars();
-});
+if (sortSelect) {
+    sortSelect.addEventListener("change", function () {
+        searchCars();
+    });
+}
 
-document.getElementById("carForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+const carForm = document.getElementById("carForm");
+if (carForm) {
+    carForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
     const MAX_SIZE_MB = 1;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -100,12 +106,12 @@ document.getElementById("carForm").addEventListener("submit", function (e) {
     })
         .then(response => response.json())
         .then(response => {
-            alert(response?.message);
-            this.reset();
-            window.location.reload();
+            localStorage.setItem("carAdded", response?.message);
+            window.location.href = "/";
         })
         .catch(error => {
             alert("Error: something went wrong.");
             console.error(error);
         });
-});
+    });
+}

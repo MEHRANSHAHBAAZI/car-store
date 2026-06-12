@@ -50,9 +50,8 @@ def save_image(file):
         filename = secure_filename(file.filename)
         filepath = os.path.join(upload_folder, filename)
         file.save(filepath)
-        return f"uploads/{filename}"
-
-    return "uploads/default.jpg"
+        return f"{filename}"
+    return "default.jpg"
 
 
 def row_to_dict(row):
@@ -62,7 +61,7 @@ def row_to_dict(row):
         "brandName": row["brandName"],
         "productionYear": row["productionYear"],
         "price": row["price"],
-        "img": row["img"] if "img" in row.keys() and row["img"] else "uploads/default.jpg"
+        "img": row["img"] if "img" in row.keys() and row["img"] else "default.jpg"
     }
 
 

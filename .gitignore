@@ -7,3 +7,4 @@
 /.idea
 /routes/_pycache_/
 /db/
+/static/uploads/
